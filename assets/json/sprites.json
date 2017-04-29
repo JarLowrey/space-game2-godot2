@@ -1,0 +1,6 @@
+{
+	"ships": ["enemyBlack1","enemyBlack2","enemyBlack3","enemyBlack4","enemyBlack5",
+		"enemyBlue1","enemyBlue2","enemyBlue3","enemyBlue4","enemyBlue5",
+		"enemyRed1","enemyRed2","enemyRed3","enemyRed4","enemyRed5"
+	]
+}
