@@ -24,7 +24,7 @@ shader/shading_mode = 0
 [sub_resource type="OccluderPolygon2D" id=3]
 
 closed = true
-cull_mode = 0
+cull_mode = 1
 polygon = Vector2Array(  )
 
 [node name="LitSprite" type="Sprite"]
