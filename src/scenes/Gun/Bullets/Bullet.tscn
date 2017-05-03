@@ -5,8 +5,6 @@
 [node name="Bullet" type="Node2D"]
 
 script/script = ExtResource( 1 )
-kill_out_of_bounds = false
-lifespan = 0
 
 [node name="Sprite" type="Sprite" parent="."]
 
