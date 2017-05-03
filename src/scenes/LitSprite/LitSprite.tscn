@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=1]
 
-[ext_resource path="res://assets/shaders/normal_material.tres" type="CanvasItemMaterial" id=1]
-[ext_resource path="res://scenes/LitSprite/LitSprite.gd" type="Script" id=2]
+[ext_resource path="res://assets/resources/shaders/normal_material.tres" type="CanvasItemMaterial" id=1]
+[ext_resource path="res://src/scenes/LitSprite/LitSprite.gd" type="Script" id=2]
 
 [sub_resource type="OccluderPolygon2D" id=1]
 
