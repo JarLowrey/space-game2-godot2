@@ -12,7 +12,7 @@ var test_json = {
 			"speed": 50,
 			"fire_from": { "x": 50, "y": 50 },
 			"params": {
-					"texture":"res://assets/imgs/bullets/laserBlue01.png",
+					"sprite_scene":"res://assets/godot/scenes/Blue bullet.tscn",
 					"rigid_body_scene": "res://assets/godot/scenes/bodies/default_bullet.tscn",
 					"collision_polygon_scene": "res://assets/godot/scenes/polygon2Ds/enemy1.xml"
 				}
