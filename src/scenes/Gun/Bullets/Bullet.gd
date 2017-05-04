@@ -11,12 +11,20 @@ var lifespan = 0 setget set_lifespan, get_lifespan
 
 func setup(shooting_gun, json):
 	gun_shot_from = shooting_gun
+	
+	#create/fetch node instances
+	sprite = get_node("Sprite")
 	collision_polygon = load(json.collision_polygon_scene).instance()
 	rigid_body = load(json.rigid_body_scene).instance()
 	
-	print(sprite)
+	#add node children
 	sprite.add_child(rigid_body)
+	
+	print(json.collision_polygon_scene)
 	rigid_body.add_child(collision_polygon)
+	
+	#apply json customization to nodes
+	sprite.set_texture(load(json.texture))
 
 func set_lifespan(span):
 	_timer.set_wait_time(span)
@@ -30,8 +38,7 @@ func _die():
 	free()
 	return 
 
-func _ready():
-	sprite = get_node("Sprite")
+func _init():
 	_timer = Timer.new()
 	_timer.connect("timeout",self,"_die") 
 	pass
