@@ -5,16 +5,12 @@ var gun_sprite = null
 var bullets = null
 
 var test_json = {
-	"texture": "res://assets/imgs/gear/guns/gun01.png",
 	"shots": [
 		{
 			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
 			"speed": 50,
-			"fire_from": { "x": 50, "y": 50 },
+			"fire_from": { "x": -50000, "y": 50 },
 			"params": {
-					"sprite_scene":"res://assets/godot/scenes/Blue bullet.tscn",
-					"rigid_body_scene": "res://assets/godot/scenes/bodies/default_bullet.tscn",
-					"collision_polygon_scene": "res://assets/godot/scenes/polygon2Ds/rectangle.tscn"
 				}
 		}
 	]
@@ -28,7 +24,6 @@ func _ready():
 	pass
 
 func setup(json):
-	gun_sprite.set_texture(load(json.texture))
 	shots = json.shots
 
 func fire():
@@ -43,6 +38,7 @@ func _fire_bullet(bullet_info):
 	#set bullet position
 	var percent_pos = Vector2(bullet_info.fire_from.x, bullet_info.fire_from.y) / 100.0
 	var pos_on_gun_sprite =  percent_pos * get_scale() + get_pos()
+	print(pos_on_gun_sprite)
 	bullet.set_pos(pos_on_gun_sprite)
 	
 	#set bullet speed
