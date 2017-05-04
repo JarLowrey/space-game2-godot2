@@ -14,7 +14,7 @@ var test_json = {
 			"params": {
 					"texture":"res://assets/imgs/bullets/laserBlue01.png",
 					"rigid_body_scene": "res://assets/godot/scenes/bodies/default_bullet.tscn",
-					"collision_polygon_scene": "res://assets/godot/scenes/polygon2Ds/enemy1.xml"
+					"collision_polygon_scene": "res://assets/godot/scenes/polygon2Ds/rectangle.tscn"
 				}
 		}
 	]
