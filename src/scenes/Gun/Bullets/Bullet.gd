@@ -4,14 +4,19 @@ var collision_polygon = null
 var sprite = null
 var gun_shot_from = null
 
-var _timer = null
-var kill_out_of_bounds = false
-var lifespan = 0 setget set_lifespan, get_lifespan
+var deleted = false
+
+var _kill_dist = 0
+var _traveled_dist = 0
+var _prev_pos = null
+
+signal bullet_killed
 
 func setup(shooting_gun, json):
 	gun_shot_from = shooting_gun
 	_setup_nodes(json)
 	_setup_bullet(json)
+	set_fixed_process(true)
 	
 func _setup_bullet(bullet_info):
 	#set bullet position
@@ -29,6 +34,34 @@ func _setup_bullet(bullet_info):
 	var vy = speed * sin(get_global_rot())
 	set_linear_velocity(Vector2(vx,vy))
 	
+	set_death_params(bullet_info.death)
+	
+func set_death_params(json):
+	if json.has("collision") and json.collision:
+		connect("body_enter", self, "kill")
+	if json.has("distance"):
+		_kill_dist = json.distance
+		_prev_pos = get_global_pos()
+	if json.has("time"):
+		var timer = Timer.new()
+		timer.connect("timeout",self,"kill") 
+		timer.set_wait_time(json.time)
+		add_child(timer)
+		timer.start()
+	if json.has("screen"):
+		var vis_notify = VisibilityNotifier2D.new()
+		add_child(vis_notify)
+		vis_notify.connect("exit_screen",self,"kill")
+	
+func _fixed_process(delta):
+	if _prev_pos != null and !deleted:
+		_traveled_dist += get_global_pos().distance_to(_prev_pos)
+		if(_traveled_dist >= _kill_dist):
+			kill()
+		else:
+			_prev_pos = get_global_pos()
+	pass
+
 func _setup_nodes(json):
 	#use json nodes if they are definied, otherwise use the editor nodes
 #	if(json.has("scenes")):
@@ -51,23 +84,15 @@ func resize_to(ref, resizable):
 	var pos = -size/2
 	resizable.edit_set_rect(Rect2(pos,size))
 
-func set_lifespan(span):
-	_timer.set_wait_time(span)
-	_timer.start()
+func kill(arg=null):
+	#ensure freeing/signal only done once if multiple kill conditions are set up
+	if(deleted):
+		return
+	deleted = true
 	
-func get_lifespan():
-	return _timer.get_time_left()
-	
-func _die():
-	print("bullet was deleted")
-	free()
-	return 
+	emit_signal("bullet_killed")
+	queue_free()
 
-func _init():
-	_timer = Timer.new()
-	_timer.connect("timeout",self,"_die") 
-	pass
-	
 func _process():
 	
 	pass

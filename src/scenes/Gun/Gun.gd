@@ -8,12 +8,17 @@ var test_json = {
 		{
 			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
 			"params": {
-					"fire_from": { "x": 50, "y": 0 }
+					"fire_from": { "x": 50, "y": 0 },
+					"death":{
+						"time":1,
+						"collision":true,
+						"screen":true,
+						"distance":500
+					}
 				}
 		}
 	]
 }
-
 var signals = []
 
 func setup(json):
@@ -22,12 +27,12 @@ func setup(json):
 func _ready():
 	gun_sprite = get_node("GunSprite")
 	setup(test_json)
-	add_bullet_body_signal("body_enter", self, "test_signal")
+	add_bullet_body_signal("bullet_killed", self, "test_signal")
 	fire()
 	pass
 
-func test_signal(body):
-	print(body," signal")
+func test_signal():
+	print("AAAAAAAAAAAAAAA signal")
 
 func remove_bullet_body_signal(sig_name,node,method):
 	for i in range(0,signals.size()):
@@ -64,5 +69,4 @@ func _fire_bullet(bullet_info):
 #	bullet.set_max_contacts_reported( num_contacts_reported ) #ensure at least 1 contact reported
 	
 	for sig_info in signals:
-		print(sig_info)
 		bullet.connect(sig_info["name"], sig_info["node"], sig_info["method"], sig_info["binds"], sig_info["flags"])

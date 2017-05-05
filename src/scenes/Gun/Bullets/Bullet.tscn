@@ -27,7 +27,7 @@ contacts_reported = 1
 contact_monitor = true
 sleeping = false
 can_sleep = true
-velocity/linear = Vector2( 200, 0 )
+velocity/linear = Vector2( 600, 0 )
 velocity/angular = 0.0
 damp_override/linear = -1.0
 damp_override/angular = -1.0
@@ -42,5 +42,9 @@ texture = ExtResource( 2 )
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
+
+[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
+
+rect = Rect2( -10, -10, 20, 20 )
 
 
