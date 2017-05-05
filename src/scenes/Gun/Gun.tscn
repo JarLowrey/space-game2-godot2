@@ -5,6 +5,7 @@
 
 [node name="Gun" type="Node2D"]
 
+transform/rot = 45.0
 script/script = ExtResource( 1 )
 
 [node name="GunSprite" type="Sprite" parent="."]
