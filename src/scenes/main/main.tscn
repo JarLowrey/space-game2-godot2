@@ -5,22 +5,22 @@
 [ext_resource path="res://assets/imgs/ships/enemyBlack2.png" type="Texture" id=3]
 [ext_resource path="res://src/scenes/Gun/Gun.tscn" type="PackedScene" id=4]
 
-[sub_resource type="ConvexPolygonShape2D" id=2]
+[sub_resource type="ConvexPolygonShape2D" id=1]
 
 custom_solver_bias = 0.0
 points = Vector2Array( 46.5, -17, 24.5, 44, 9.5, 36, 16.5, 16 )
 
-[sub_resource type="ConvexPolygonShape2D" id=3]
+[sub_resource type="ConvexPolygonShape2D" id=2]
 
 custom_solver_bias = 0.0
 points = Vector2Array( -17.5, 16, -10.5, 37, -25.5, 42, -47.5, -16 )
 
-[sub_resource type="ConvexPolygonShape2D" id=4]
+[sub_resource type="ConvexPolygonShape2D" id=3]
 
 custom_solver_bias = 0.0
 points = Vector2Array( -17.5, 16, -47.5, -16, -29.5, -42, -1.5, -29, 16.5, 16 )
 
-[sub_resource type="ConvexPolygonShape2D" id=5]
+[sub_resource type="ConvexPolygonShape2D" id=4]
 
 custom_solver_bias = 0.0
 points = Vector2Array( 46.5, -17, 16.5, 16, -1.5, -29, 29.5, -42 )
@@ -33,16 +33,16 @@ script/script = ExtResource( 1 )
 
 transform/pos = Vector2( 700, 234 )
 input/pickable = false
-shapes/0/shape = SubResource( 2 )
+shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/0/trigger = false
-shapes/1/shape = SubResource( 3 )
+shapes/1/shape = SubResource( 2 )
 shapes/1/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/1/trigger = false
-shapes/2/shape = SubResource( 4 )
+shapes/2/shape = SubResource( 3 )
 shapes/2/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/2/trigger = false
-shapes/3/shape = SubResource( 5 )
+shapes/3/shape = SubResource( 4 )
 shapes/3/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/3/trigger = false
 collision/layers = 0
@@ -60,5 +60,6 @@ texture = ExtResource( 3 )
 [node name="Gun" parent="Kinematic/Sprite" instance=ExtResource( 4 )]
 
 transform/rot = 180.0
+fire_rate = 0
 
 

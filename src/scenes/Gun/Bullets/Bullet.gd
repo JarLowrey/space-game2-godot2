@@ -45,6 +45,7 @@ func set_death_params(json):
 	if json.has("time"):
 		var timer = Timer.new()
 		timer.connect("timeout",self,"kill") 
+		timer.set_one_shot(true)
 		timer.set_wait_time(json.time)
 		add_child(timer)
 		timer.start()

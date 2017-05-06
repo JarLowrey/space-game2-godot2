@@ -14,4 +14,11 @@ texture = ExtResource( 2 )
 
 [node name="Bullets" type="Node2D" parent="."]
 
+[node name="AutoFireTimer" type="Timer" parent="."]
+
+process_mode = 1
+wait_time = 1.0
+one_shot = false
+autostart = false
+
 
