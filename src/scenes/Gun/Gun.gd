@@ -2,15 +2,22 @@ extends Node2D
 
 var shots = []
 var gun_sprite = null
-export var fire_rate = 0 setget set_fire_rate
-signal volley_fired
+export var fire_rate = 0 setget set_auto_fire
 
-func set_fire_rate(val):
-	fire_rate = val
-	if val > 0:
-		get_node("AutoFireTimer").set_wait_time(val)
+signal volley_fired
+signal out_of_ammo
+
+func set_auto_fire(fire_rate_in_sec):
+	fire_rate = fire_rate_in_sec
+	var timer = get_node("AutoFireTimer")
+	if fire_rate > 0:
+		timer.set_wait_time(fire_rate)
+		timer.start()
 	else:
-		get_node("AutoFireTimer").stop()
+		timer.stop()
+
+func stop_firing():
+	set_auto_fire(-1)
 
 var test_json = {
 	"auto_fire": {
@@ -19,6 +26,7 @@ var test_json = {
 	},
 	"shots": [
 		{
+			"ammo": 2,
 			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
 			"params": {
 					"fire_from": { "x": 50, "y": 0 },
@@ -36,14 +44,14 @@ var signals = []
 
 func setup(json):
 	shots = json.shots
+	for shot in shots:
+		if !shot.has("ammo"):
+			shot.ammo = -1
+	
 	if json.has("auto_fire"):
-		fire_rate = json.auto_fire.fire_rate
-		
+		set_auto_fire(json.auto_fire.fire_rate)		
 		if json.auto_fire.has("fire_immediately") and json.auto_fire.fire_immediately:
-			print("ASD")
 			fire()
-		get_node("AutoFireTimer").set_wait_time(fire_rate)
-		get_node("AutoFireTimer").start()
 
 func _ready():
 	gun_sprite = get_node("GunSprite")
@@ -78,7 +86,12 @@ func add_bullet_body_signal(sig_name, node, method, binds=Array(), flags=0):
 func fire():
 	var bullets = []
 	for bullet_info in shots:
-		bullets.append(_fire_bullet(bullet_info))
+		if bullet_info.ammo > 0 or bullet_info.ammo < 0:
+			var fired_bullet = _fire_bullet(bullet_info)
+			bullets.append(fired_bullet)
+			bullet_info.ammo -= 1
+			if (bullet_info.ammo + 1) > 0 and bullet_info.ammo <= 0:
+				emit_signal("out_of_ammo", bullet_info)
 	emit_signal("volley_fired",bullets)
 	
 func _fire_bullet(bullet_info):
