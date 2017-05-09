@@ -2,41 +2,64 @@ extends Node2D
 
 var shots = []
 var gun_sprite = null
-export var fire_rate = 0 setget set_auto_fire
+const _timer_node = "Timers/ShotClock"
+export var auto_fire = true
+export var fire_delay = 1.0
+export var reload_delay = 2.0
+export var ammo = -1 setget set_ammo
+export var clip_size = 1 setget set_clip_size
+var _ammo_left_in_clip = 1
+var can_fire = true setget set_can_fire
 
 signal volley_fired
 signal out_of_ammo
+signal can_fire_again
 
-func set_auto_fire(fire_rate_in_sec):
-	fire_rate = fire_rate_in_sec
-	var timer = get_node("AutoFireTimer")
-	if fire_rate > 0:
-		timer.set_wait_time(fire_rate)
-		timer.start()
-	else:
-		timer.stop()
+func set_clip_size(val):
+	clip_size = val
+	if val < _ammo_left_in_clip:
+		_ammo_left_in_clip = val
 
-func stop_firing():
-	set_auto_fire(-1)
+func set_can_fire(val):
+	can_fire = val
+	if val:
+		emit_signal("can_fire_again")
+		if auto_fire:
+			fire()
+
+func reload():
+	_ammo_left_in_clip = clip_size
+	can_fire = false
+	get_node(_timer_node).set_wait_time(reload_delay)
+	get_node(_timer_node).start()
+
+func set_ammo(val):
+	ammo = val
+	if(ammo < _ammo_left_in_clip):
+		_ammo_left_in_clip = ammo
 
 var test_json = {
+	"ammo":5,
+	"delay":{
+		"fire": .2,
+		"reload": 2
+	},
+	"clip_size": 2,
 	"auto_fire": {
 		"fire_immediately": true,
-		"fire_rate": 1.5
 	},
 	"shots": [
 		{
-			"ammo": 2,
 			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
 			"params": {
-					"fire_from": { "x": 50, "y": 0 },
-					"death":{
-						"time":1,
-						"collision":true,
-						"screen":true,
-						"distance":500
-					}
+				"fire_from": { "x": 50, "y": 0 },
+				"death":{
+					"time":1,
+					"collision":true,
+					"screen":true,
+					"distance":500
 				}
+			}
 		}
 	]
 }
@@ -44,20 +67,24 @@ var signals = []
 
 func setup(json):
 	shots = json.shots
-	for shot in shots:
-		if !shot.has("ammo"):
-			shot.ammo = -1
+	fire_delay = json.delay.fire
+	ammo = json.ammo
+	get_node(_timer_node).set_wait_time(fire_delay)
+	get_node(_timer_node).start()
+	reload_delay = json.delay.reload
+	clip_size = json.clip_size
+	_ammo_left_in_clip = clip_size
 	
+	auto_fire = json.has("auto_fire")
 	if json.has("auto_fire"):
-		set_auto_fire(json.auto_fire.fire_rate)		
 		if json.auto_fire.has("fire_immediately") and json.auto_fire.fire_immediately:
 			fire()
 
 func _ready():
 	gun_sprite = get_node("GunSprite")
-	get_node("AutoFireTimer").connect("timeout", self, "fire") 
-	setup(test_json)
+	get_node(_timer_node).connect("timeout", self, "set_can_fire",[true])
 	add_bullet_body_signal("bullet_killed", self, "test_signal")
+	setup(test_json)
 	pass
 
 func test_signal():
@@ -70,7 +97,7 @@ func remove_bullet_body_signal(sig_name,node,method):
 			signals.remove(i)
 	
 	for bullet in get_node("Bullets").get_children():
-		bullet.disconnect(sig_name,node,method)
+		bullet.disconnect(sig_name, node, method)
 
 func add_bullet_body_signal(sig_name, node, method, binds=Array(), flags=0):
 	signals.append({
@@ -84,15 +111,38 @@ func add_bullet_body_signal(sig_name, node, method, binds=Array(), flags=0):
 		bullet.connect(sig_name,node,method,binds,flags)
 
 func fire():
+	if(!can_fire):
+		return
+	
 	var bullets = []
 	for bullet_info in shots:
-		if bullet_info.ammo > 0 or bullet_info.ammo < 0:
-			var fired_bullet = _fire_bullet(bullet_info)
-			bullets.append(fired_bullet)
-			bullet_info.ammo -= 1
-			if (bullet_info.ammo + 1) > 0 and bullet_info.ammo <= 0:
-				emit_signal("out_of_ammo", bullet_info)
-	emit_signal("volley_fired",bullets)
+		var fired_bullet = _fire_bullet(bullet_info)
+		bullets.append(fired_bullet)
+	emit_signal("volley_fired", bullets)
+	
+	set_can_fire(false)
+	_ammo_left_in_clip -= 1
+	if ammo > 0:
+		ammo -= 1
+	
+	print(ammo)
+	
+	#prepare to fire again if possible
+	var timer = get_node(_timer_node)
+	
+	if (ammo + 1) > 0 and ammo <= 0:
+		emit_signal("out_of_ammo")
+		timer.stop()
+	else:
+		if _ammo_left_in_clip <= 0:
+			if auto_fire:
+				reload()
+			else:
+				timer.stop()
+		else:
+			timer.stop()
+			get_node(_timer_node).set_wait_time(fire_delay)
+			timer.start()
 	
 func _fire_bullet(bullet_info):
 	var bullet = load(bullet_info.bullet_scene).instance()
