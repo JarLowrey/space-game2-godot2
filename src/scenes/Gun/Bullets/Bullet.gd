@@ -5,6 +5,8 @@ var sprite = null
 var gun_shot_from = null
 
 var deleted = false
+var target = null
+var tracking_angle_vel_scalar = 0
 
 var _kill_dist = 0
 var _traveled_dist = 0
@@ -21,7 +23,10 @@ func setup(shooting_gun, json):
 	set_fixed_process(true)
 	
 func _setup_bullet(bullet_info):
-	_scale_velocity = bullet_info.scale_velocity
+	if bullet_info.has("tracking_angle_vel_scalar"):
+		tracking_angle_vel_scalar = bullet_info.tracking_angle_vel_scalar
+	if bullet_info.has("scale_velocity"):
+		_scale_velocity = bullet_info.scale_velocity
 	if bullet_info.has("max_scale"):
 		_max_scale = bullet_info.max_scale
 	#set bullet position
@@ -30,15 +35,17 @@ func _setup_bullet(bullet_info):
 	
 	set_global_rot(gun_shot_from.get_global_rot())
 	
-	#set bullet speed
-	var speed = sqrt(get_linear_velocity().length_squared()) #magnitude of rigid body's linear velocity
-	var vx = speed * cos(-get_global_rot()) #idk why this is negative?
-	var vy = speed * sin(-get_global_rot())
-	set_linear_velocity(Vector2(vx,vy))
+	_set_vel_from_angle(get_global_rot())
 	
 	set_death_params(bullet_info.death)
 	
-func scale_bullet():
+func _set_vel_from_angle(angle):
+	var speed = sqrt(get_linear_velocity().length_squared()) #magnitude of rigid body's linear velocity
+	var vx = speed * cos(-angle) #idk why this is negative?
+	var vy = speed * sin(-angle)
+	set_linear_velocity(Vector2(vx,vy))
+
+func _scale_bullet():
 	var size = get_scale()
 	var new_x = size.x + _scale_velocity[0]
 	var new_y = size.y + _scale_velocity[1]
@@ -48,6 +55,13 @@ func scale_bullet():
 		if new_y > _max_scale[1]:
 			new_y = size.y
 	set_scale(Vector2(new_x,new_y))
+
+func _track_target():
+	var angle_btw = get_global_pos().angle_to(target.get_global_pos())
+	var angle_diff = get_global_rot() - angle_btw
+	
+	set_angular_velocity(tracking_angle_vel_scalar * angle_diff)
+	_set_vel_from_angle(get_global_rot())
 
 func set_death_params(json):
 	if json.has("collision") and json.collision:
@@ -79,8 +93,11 @@ func _fixed_process(delta):
 
 func _process(delta):
 	if _scale_velocity != null:
-		scale_bullet()
+		_scale_bullet()
+	if target:
+		_track_target()
 	pass
+
 func _ready():
 	set_process(true)
 	pass

@@ -51,10 +51,10 @@ var test_json = {
 	"shots": [
 		{
 			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
-			"track_gun":false,
+			"follow_gun":false,
 			"params": {
+				"tracking_angle_vel_scalar": 5,
 				"fire_from": [0,0],
-				"scale_velocity": [0.2,0.1],
 				"death":{
 					"time":1,
 					"collision":true,
@@ -99,6 +99,7 @@ func fire():
 	var bullets = []
 	for bullet_info in shots:
 		var fired_bullet = _fire_bullet(bullet_info)
+		fired_bullet.target = get_node("/root/main_scene/Target")
 		bullets.append(fired_bullet)
 	emit_signal("volley_fired", bullets)
 	
@@ -127,7 +128,7 @@ func fire():
 func _fire_bullet(bullet_info):
 	var bullet = load(bullet_info.bullet_scene).instance()
 	bullet.setup(self, bullet_info.params)
-	if bullet_info.has("track_gun") and bullet_info.track_gun:
+	if bullet_info.has("follow_gun") and bullet_info.follow_gun:
 		get_node("ChildBullets").add_child(bullet)
 	else:
 		get_node("/root").add_child(bullet)

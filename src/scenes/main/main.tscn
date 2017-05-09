@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=1]
+[gd_scene load_steps=11 format=1]
 
 [ext_resource path="res://src/scenes/main/main.gd" type="Script" id=1]
 [ext_resource path="res://assets/godot/scenes/polygon2Ds/enemy1.xml" type="PackedScene" id=2]
 [ext_resource path="res://assets/imgs/ships/enemyBlack2.png" type="Texture" id=3]
 [ext_resource path="res://src/scenes/Gun/Gun.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/imgs/ships/enemyBlack4.png" type="Texture" id=5]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 
@@ -25,13 +26,18 @@ points = Vector2Array( -17.5, 16, -47.5, -16, -29.5, -42, -1.5, -29, 16.5, 16 )
 custom_solver_bias = 0.0
 points = Vector2Array( 46.5, -17, 16.5, 16, -1.5, -29, 29.5, -42 )
 
+[sub_resource type="RectangleShape2D" id=5]
+
+custom_solver_bias = 0.0
+extents = Vector2( 10, 95 )
+
 [node name="main_scene" type="Node2D"]
 
 script/script = ExtResource( 1 )
 
 [node name="body" type="RigidBody2D" parent="."]
 
-transform/pos = Vector2( 700, 234 )
+transform/pos = Vector2( 300, 234 )
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
@@ -74,5 +80,42 @@ texture = ExtResource( 3 )
 [node name="Gun" parent="body/Sprite" instance=ExtResource( 4 )]
 
 transform/rot = 75.0
+
+[node name="Target" type="RigidBody2D" parent="."]
+
+input/pickable = false
+shapes/0/shape = SubResource( 5 )
+shapes/0/transform = Matrix32( 4.38461, 0, 0, 0.443878, 915, 109.5 )
+shapes/0/trigger = false
+collision/layers = 1
+collision/mask = 1
+mode = 0
+mass = 1.0
+friction = 1.0
+bounce = 0.0
+gravity_scale = 1.0
+custom_integrator = false
+continuous_cd = 0
+contacts_reported = 0
+contact_monitor = false
+sleeping = false
+can_sleep = true
+velocity/linear = Vector2( 0, 0 )
+velocity/angular = 0.0
+damp_override/linear = -1.0
+damp_override/angular = -1.0
+
+[node name="Sprite" type="Sprite" parent="Target"]
+
+transform/pos = Vector2( 915, 113 )
+texture = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Target"]
+
+transform/pos = Vector2( 915, 109.5 )
+transform/scale = Vector2( 4.38461, 0.443878 )
+shape = SubResource( 5 )
+trigger = false
+_update_shape_index = 0
 
 
