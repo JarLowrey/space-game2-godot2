@@ -39,7 +39,7 @@ func set_ammo(val):
 		_ammo_left_in_clip = ammo
 
 var test_json = {
-	"ammo":5,
+	"ammo":-1,
 	"delay":{
 		"fire": .2,
 		"reload": 2
@@ -52,7 +52,7 @@ var test_json = {
 		{
 			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
 			"params": {
-				"fire_from": { "x": 50, "y": 0 },
+				"fire_from": { "x": 5, "y": 0 },
 				"death":{
 					"time":1,
 					"collision":true,
@@ -88,7 +88,7 @@ func _ready():
 	pass
 
 func test_signal():
-	print("AAAAAAAAAAAAAAA signal")
+	print("bullet died signal")
 
 func remove_bullet_body_signal(sig_name,node,method):
 	for i in range(0,signals.size()):
@@ -112,7 +112,7 @@ func add_bullet_body_signal(sig_name, node, method, binds=Array(), flags=0):
 
 func fire():
 	if(!can_fire):
-		return
+		return 
 	
 	var bullets = []
 	for bullet_info in shots:
@@ -124,8 +124,6 @@ func fire():
 	_ammo_left_in_clip -= 1
 	if ammo > 0:
 		ammo -= 1
-	
-	print(ammo)
 	
 	#prepare to fire again if possible
 	var timer = get_node(_timer_node)

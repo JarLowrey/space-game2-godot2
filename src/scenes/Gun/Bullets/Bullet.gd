@@ -20,18 +20,15 @@ func setup(shooting_gun, json):
 	
 func _setup_bullet(bullet_info):
 	#set bullet position
-	var percent_pos = Vector2(bullet_info.fire_from.x, bullet_info.fire_from.y) / 100.0
-	var gun_size = gun_shot_from.gun_sprite.get_item_rect().size
-	var gun_pos = gun_shot_from.gun_sprite.get_global_pos()
-	var pos_on_gun_sprite =  percent_pos * gun_size + gun_pos
-	set_global_pos(pos_on_gun_sprite)
+	var offset = Vector2(bullet_info.fire_from.x, bullet_info.fire_from.y)
+	set_pos(gun_shot_from.gun_sprite.get_global_pos() + offset)
 	
 	set_global_rot(gun_shot_from.get_global_rot())
 	
 	#set bullet speed
 	var speed = sqrt(get_linear_velocity().length_squared()) #magnitude of rigid body's linear velocity
-	var vx = speed * cos(get_global_rot()) #idk why this is negative?
-	var vy = speed * sin(get_global_rot())
+	var vx = speed * cos(-get_global_rot()) #idk why this is negative?
+	var vy = speed * sin(-get_global_rot())
 	set_linear_velocity(Vector2(vx,vy))
 	
 	set_death_params(bullet_info.death)
