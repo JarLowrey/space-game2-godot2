@@ -9,6 +9,8 @@ var deleted = false
 var _kill_dist = 0
 var _traveled_dist = 0
 var _prev_pos = null
+var _scale_velocity = null
+var _max_scale = null
 
 signal bullet_killed
 
@@ -19,8 +21,11 @@ func setup(shooting_gun, json):
 	set_fixed_process(true)
 	
 func _setup_bullet(bullet_info):
+	_scale_velocity = bullet_info.scale_velocity
+	if bullet_info.has("max_scale"):
+		_max_scale = bullet_info.max_scale
 	#set bullet position
-	var offset = Vector2(bullet_info.fire_from.x, bullet_info.fire_from.y)
+	var offset = Vector2(bullet_info.fire_from[0], bullet_info.fire_from[1])
 	set_pos(gun_shot_from.gun_sprite.get_global_pos() + offset)
 	
 	set_global_rot(gun_shot_from.get_global_rot())
@@ -33,6 +38,17 @@ func _setup_bullet(bullet_info):
 	
 	set_death_params(bullet_info.death)
 	
+func scale_bullet():
+	var size = get_scale()
+	var new_x = size.x + _scale_velocity[0]
+	var new_y = size.y + _scale_velocity[1]
+	if _max_scale != null:
+		if new_x > _max_scale[0]:
+			new_x = size.x
+		if new_y > _max_scale[1]:
+			new_y = size.y
+	set_scale(Vector2(new_x,new_y))
+
 func set_death_params(json):
 	if json.has("collision") and json.collision:
 		connect("body_enter", self, "kill")
@@ -52,12 +68,21 @@ func set_death_params(json):
 		vis_notify.connect("exit_screen",self,"kill")
 	
 func _fixed_process(delta):
+	#increment travel distance if that is a death param
 	if _prev_pos != null and !deleted:
 		_traveled_dist += get_global_pos().distance_to(_prev_pos)
 		if(_traveled_dist >= _kill_dist):
 			kill()
 		else:
 			_prev_pos = get_global_pos()
+	pass
+
+func _process(delta):
+	if _scale_velocity != null:
+		scale_bullet()
+	pass
+func _ready():
+	set_process(true)
 	pass
 
 func _setup_nodes(json):
@@ -90,7 +115,3 @@ func kill(arg=null):
 	
 	emit_signal("bullet_killed")
 	queue_free()
-
-func _process():
-	
-	pass

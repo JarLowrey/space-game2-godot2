@@ -29,7 +29,7 @@ points = Vector2Array( 46.5, -17, 16.5, 16, -1.5, -29, 29.5, -42 )
 
 script/script = ExtResource( 1 )
 
-[node name="Kinematic" type="KinematicBody2D" parent="."]
+[node name="body" type="RigidBody2D" parent="."]
 
 transform/pos = Vector2( 700, 234 )
 input/pickable = false
@@ -47,17 +47,31 @@ shapes/3/transform = Matrix32( 1, 0, 0, 1, 0, 0 )
 shapes/3/trigger = false
 collision/layers = 0
 collision/mask = 0
-collision/margin = 0.001
+mode = 0
+mass = 1.0
+friction = 0.0
+bounce = 0.0
+gravity_scale = 0.0
+custom_integrator = false
+continuous_cd = 0
+contacts_reported = 0
+contact_monitor = false
+sleeping = false
+can_sleep = true
+velocity/linear = Vector2( -100, 0 )
+velocity/angular = 0.0
+damp_override/linear = -1.0
+damp_override/angular = -1.0
 
-[node name="CollisionPolygon2D" parent="Kinematic" instance=ExtResource( 2 )]
+[node name="CollisionPolygon2D" parent="body" instance=ExtResource( 2 )]
 
 shape_range = Vector2( 0, 3 )
 
-[node name="Sprite" type="Sprite" parent="Kinematic"]
+[node name="Sprite" type="Sprite" parent="body"]
 
 texture = ExtResource( 3 )
 
-[node name="Gun" parent="Kinematic/Sprite" instance=ExtResource( 4 )]
+[node name="Gun" parent="body/Sprite" instance=ExtResource( 4 )]
 
 transform/rot = 75.0
 

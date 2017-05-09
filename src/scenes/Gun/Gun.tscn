@@ -17,7 +17,7 @@ clip_size = 5
 
 texture = ExtResource( 2 )
 
-[node name="Bullets" type="Node2D" parent="."]
+[node name="ChildBullets" type="Node2D" parent="."]
 
 [node name="Timers" type="Node" parent="."]
 

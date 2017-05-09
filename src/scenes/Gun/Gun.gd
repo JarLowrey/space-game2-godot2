@@ -44,15 +44,17 @@ var test_json = {
 		"fire": .2,
 		"reload": 2
 	},
-	"clip_size": 2,
+	"clip_size": 1,
 	"auto_fire": {
 		"fire_immediately": true,
 	},
 	"shots": [
 		{
 			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
+			"track_gun":false,
 			"params": {
-				"fire_from": { "x": 5, "y": 0 },
+				"fire_from": [0,0],
+				"scale_velocity": [0.2,0.1],
 				"death":{
 					"time":1,
 					"collision":true,
@@ -81,34 +83,14 @@ func setup(json):
 			fire()
 
 func _ready():
+	#setup nodes
 	gun_sprite = get_node("GunSprite")
 	get_node(_timer_node).connect("timeout", self, "set_can_fire",[true])
-	add_bullet_body_signal("bullet_killed", self, "test_signal")
 	setup(test_json)
 	pass
 
 func test_signal():
 	print("bullet died signal")
-
-func remove_bullet_body_signal(sig_name,node,method):
-	for i in range(0,signals.size()):
-		var sig = signals[i]
-		if sig["name"] == sig_name and sig["node"] == node and sig["method"] == method:
-			signals.remove(i)
-	
-	for bullet in get_node("Bullets").get_children():
-		bullet.disconnect(sig_name, node, method)
-
-func add_bullet_body_signal(sig_name, node, method, binds=Array(), flags=0):
-	signals.append({
-		"name": sig_name,
-		"node": node,
-		"method": method,
-		"binds": binds,
-		"flags":flags
-	})
-	for bullet in get_node("Bullets").get_children():
-		bullet.connect(sig_name,node,method,binds,flags)
 
 func fire():
 	if(!can_fire):
@@ -145,7 +127,10 @@ func fire():
 func _fire_bullet(bullet_info):
 	var bullet = load(bullet_info.bullet_scene).instance()
 	bullet.setup(self, bullet_info.params)
-	get_node("Bullets").add_child(bullet)
+	if bullet_info.has("track_gun") and bullet_info.track_gun:
+		get_node("ChildBullets").add_child(bullet)
+	else:
+		get_node("/root").add_child(bullet)
 	
 #	#Make sure signals always fire
 #	bullet.set_contact_monitor(true) #you're attaching a signal, ensure it will be fired!
