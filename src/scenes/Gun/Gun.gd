@@ -39,29 +39,18 @@ func set_ammo(val):
 		_ammo_left_in_clip = ammo
 
 var test_json = {
-	"ammo":-1,
+	"ammo":3,
 	"delay":{
-		"fire": .2,
+		"fire": .1,
 		"reload": 2
 	},
-	"clip_size": 1,
+	"clip_size": 3,
 	"auto_fire": {
 		"fire_immediately": true,
 	},
 	"shots": [
 		{
-			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn",
-			"follow_gun":false,
-			"params": {
-				"tracking_angle_vel_scalar": 5,
-				"fire_from": [0,0],
-				"death":{
-					"time":1,
-					"collision":true,
-					"screen":true,
-					"distance":500
-				}
-			}
+			"bullet_scene": "res://src/scenes/Gun/Bullets/Bullet.tscn"
 		}
 	]
 }
@@ -84,9 +73,14 @@ func setup(json):
 
 func _ready():
 	#setup nodes
+	var child_bullets = Node2D.new()
+	child_bullets.set_name("ChildBullets")
+	add_child(child_bullets)
+	child_bullets.set_owner(get_node("/root"))
+	
 	gun_sprite = get_node("GunSprite")
 	get_node(_timer_node).connect("timeout", self, "set_can_fire",[true])
-	setup(test_json)
+	call_deferred("setup",test_json)
 	pass
 
 func test_signal():
@@ -99,7 +93,7 @@ func fire():
 	var bullets = []
 	for bullet_info in shots:
 		var fired_bullet = _fire_bullet(bullet_info)
-		fired_bullet.target = get_node("/root/main_scene/Target")
+#		fired_bullet.target = get_node("/root/main_scene/Target")
 		bullets.append(fired_bullet)
 	emit_signal("volley_fired", bullets)
 	
@@ -127,11 +121,7 @@ func fire():
 	
 func _fire_bullet(bullet_info):
 	var bullet = load(bullet_info.bullet_scene).instance()
-	bullet.setup(self, bullet_info.params)
-	if bullet_info.has("follow_gun") and bullet_info.follow_gun:
-		get_node("ChildBullets").add_child(bullet)
-	else:
-		get_node("/root").add_child(bullet)
+	bullet.setup(self)
 	
 #	#Make sure signals always fire
 #	bullet.set_contact_monitor(true) #you're attaching a signal, ensure it will be fired!

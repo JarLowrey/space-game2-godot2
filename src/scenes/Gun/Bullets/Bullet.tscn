@@ -32,19 +32,25 @@ velocity/angular = 0.0
 damp_override/linear = -1.0
 damp_override/angular = -1.0
 script/script = ExtResource( 1 )
+fire_pos_offset = [ 0, 0 ]
+tracking_angle_vel_scalar = 0
+follow_gun = false
+fit_collider_to_sprite = true
+size_scaling_velocity = [ 0, 0 ]
+max_size_scale = [ 0, 0 ]
+kill_on_collide = false
+max_travel_dist = -1
+viewport_exit_kill = false
+lifespan = -1
 
 [node name="Sprite" type="Sprite" parent="."]
 
 texture = ExtResource( 2 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionPolygon" type="CollisionShape2D" parent="."]
 
 shape = SubResource( 1 )
 trigger = false
 _update_shape_index = 0
-
-[node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."]
-
-rect = Rect2( -10, -10, 20, 20 )
 
 
