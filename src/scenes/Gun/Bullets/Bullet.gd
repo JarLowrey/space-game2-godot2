@@ -18,9 +18,9 @@ export var max_size_scale = [0,0]
 
 #death/kill/free() related vars
 export var kill_on_collide = false setget set_kill_on_collide
-export var max_travel_dist = -1 setget set_max_travel_dist
-export var viewport_exit_kill = false setget set_viewport_exit_kill
-export var lifespan = -1 setget set_lifespan
+export var kill_viewport_exit = true setget set_kill_viewport_exit
+export var kill_travel_dist = -1 setget set_kill_travel_dist
+export var kill_after_time = -1 setget set_kill_after_time
 
 var _traveled_dist = 0
 var _prev_pos = null
@@ -29,7 +29,6 @@ var _vis_notifier = null
 signal bullet_killed
 
 func setup(shooting_gun):
-	print("shot")
 	gun_shot_from = shooting_gun
 	
 	if fit_collider_to_sprite:
@@ -87,25 +86,25 @@ func set_fit_collider_to_sprite(val):
 	fit_collider_to_sprite = val
 	if fit_collider_to_sprite and has_node(sprite_node_name) and has_node(collider_node_name):
 		resize_to(get_node(sprite_node_name),get_node(collider_node_name))
-func set_lifespan(val):
-	lifespan = val
+func set_kill_after_time(val):
+	kill_after_time = val
 	if val > 0:
 		var timer = Timer.new()
 		timer.connect("timeout",self,"kill") 
 		timer.set_one_shot(true)
-		timer.set_wait_time(lifespan)
+		timer.set_wait_time(kill_after_time)
 		add_child(timer)
 		timer.start()
 func set_kill_on_collide(val):
 	kill_on_collide = val
 	if val:
 		connect("body_enter", self, "kill")
-func set_max_travel_dist(val):
-	max_travel_dist = val
-	if max_travel_dist > 0:
+func set_kill_travel_dist(val):
+	kill_travel_dist = val
+	if kill_travel_dist > 0:
 		_prev_pos = get_global_pos()
-func set_viewport_exit_kill(val):
-	viewport_exit_kill = val
+func set_kill_viewport_exit(val):
+	kill_viewport_exit = val
 	if val:
 		if !_vis_notifier:
 			_vis_notifier = VisibilityNotifier2D.new()
@@ -119,7 +118,7 @@ func _fixed_process(delta):
 	#increment travel distance if that is a death param
 	if _prev_pos != null and !deleted:
 		_traveled_dist += get_global_pos().distance_to(_prev_pos)
-		if(_traveled_dist >= max_travel_dist):
+		if(_traveled_dist >= kill_travel_dist):
 			kill()
 		else:
 			_prev_pos = get_global_pos()
