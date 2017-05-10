@@ -6,6 +6,7 @@ const collider_node_name = "CollisionPolygon"
 
 var deleted = false
 var target = null
+
 #misc vars
 export var fire_pos_offset = [0,0]
 export var tracking_angle_vel_scalar = 0
@@ -30,9 +31,6 @@ signal bullet_killed
 
 func setup(shooting_gun):
 	gun_shot_from = shooting_gun
-	
-	if fit_collider_to_sprite:
-		resize_to(get_node(sprite_node_name),get_node(collider_node_name))
 	
 	#choose parent
 	var parent = null;
@@ -132,6 +130,9 @@ func _process(delta):
 func _ready():
 	set_process(true)
 	set_fixed_process(true)
+	
+	if fit_collider_to_sprite:
+		resize_to(get_node(sprite_node_name),get_node(collider_node_name))
 	pass
 
 func resize_to(ref, resizable):
@@ -144,6 +145,7 @@ func kill(arg=null):
 	if(deleted):
 		return
 	deleted = true
+	print("killed")
 	
 	emit_signal("bullet_killed")
 	queue_free()

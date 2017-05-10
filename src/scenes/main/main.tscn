@@ -77,7 +77,7 @@ shape_range = Vector2( 0, 3 )
 
 texture = ExtResource( 3 )
 
-[node name="Gun" parent="body/Sprite" instance=ExtResource( 4 )]
+[node name="Gun" parent="body" instance=ExtResource( 4 )]
 
 transform/rot = 75.0
 
@@ -85,7 +85,7 @@ transform/rot = 75.0
 
 input/pickable = false
 shapes/0/shape = SubResource( 5 )
-shapes/0/transform = Matrix32( 4.38461, 0, 0, 0.443878, 915, 109.5 )
+shapes/0/transform = Matrix32( 4.38461, 0, 0, 0.459184, 915, 111 )
 shapes/0/trigger = false
 collision/layers = 1
 collision/mask = 1
@@ -112,8 +112,8 @@ texture = ExtResource( 5 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Target"]
 
-transform/pos = Vector2( 915, 109.5 )
-transform/scale = Vector2( 4.38461, 0.443878 )
+transform/pos = Vector2( 915, 111 )
+transform/scale = Vector2( 4.38461, 0.459184 )
 shape = SubResource( 5 )
 trigger = false
 _update_shape_index = 0

@@ -9,21 +9,13 @@ transform/rot = 45.0
 script/script = ExtResource( 1 )
 auto_fire = true
 fire_delay = 0.2
-reload_delay = 2.0
+reload_delay = 1.0
 ammo = -1
-clip_size = 5
+clip_size = 2
+shots = [ "res://src/scenes/Gun/Bullets/Bullet.tscn" ]
 
 [node name="GunSprite" type="Sprite" parent="."]
 
 texture = ExtResource( 2 )
-
-[node name="Timers" type="Node" parent="."]
-
-[node name="ShotClock" type="Timer" parent="Timers"]
-
-process_mode = 1
-wait_time = 1.06
-one_shot = false
-autostart = false
 
 
