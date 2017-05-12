@@ -1,7 +1,6 @@
 extends Node2D
 
 var can_fire = true setget set_can_fire
-var gun_sprite = null
 
 export var auto_fire = true
 export var fire_delay = 1.0
@@ -15,6 +14,7 @@ var _timer_node = null
 
 signal volley_fired
 signal out_of_ammo
+signal clip_empty
 signal can_fire_again
 
 func set_clip_size(val):
@@ -40,15 +40,6 @@ func set_ammo(val):
 	if(ammo < _ammo_left_in_clip):
 		_ammo_left_in_clip = ammo
 
-
-func setup():
-	_timer_node.set_wait_time(fire_delay)
-	_timer_node.start()
-	_ammo_left_in_clip = clip_size
-	
-	if auto_fire:
-		fire()
-
 func _ready():
 	#setup nodes
 	var child_bullets = Node2D.new()
@@ -58,14 +49,15 @@ func _ready():
 	
 	_timer_node = Timer.new()
 	add_child(_timer_node)
+	_timer_node.set_wait_time(fire_delay)
+	_timer_node.start()
+	_ammo_left_in_clip = clip_size
 	
-	gun_sprite = get_node("GunSprite")
 	_timer_node.connect("timeout", self, "set_can_fire",[true])
-	call_deferred("setup")
+	
+	if auto_fire:
+		call_deferred("fire")
 	pass
-
-func test_signal():
-	print("bullet died signal")
 
 func fire():
 	if(!can_fire):
@@ -90,8 +82,10 @@ func fire():
 	else:
 		_timer_node.stop()
 		if _ammo_left_in_clip <= 0:
+			emit_signal("clip_empty")
 			if auto_fire:
 				reload()
 		else:
 			_timer_node.set_wait_time(fire_delay)
 			_timer_node.start()
+
