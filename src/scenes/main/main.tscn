@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=1]
+[gd_scene load_steps=12 format=1]
 
 [ext_resource path="res://src/scenes/main/main.gd" type="Script" id=1]
 [ext_resource path="res://assets/godot/scenes/polygon2Ds/enemy1.xml" type="PackedScene" id=2]
 [ext_resource path="res://assets/imgs/ships/enemyBlack2.png" type="Texture" id=3]
 [ext_resource path="res://src/scenes/Gun.tscn" type="PackedScene" id=4]
 [ext_resource path="res://assets/imgs/ships/enemyBlack4.png" type="Texture" id=5]
+[ext_resource path="res://src/scenes/ship/player.tscn" type="PackedScene" id=6]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 
@@ -117,5 +118,9 @@ transform/scale = Vector2( 4.38461, 0.459184 )
 shape = SubResource( 5 )
 trigger = false
 _update_shape_index = 0
+
+[node name="player" parent="." instance=ExtResource( 6 )]
+
+transform/pos = Vector2( 498, 39 )
 
 
