@@ -121,6 +121,6 @@ _update_shape_index = 0
 
 [node name="player" parent="." instance=ExtResource( 6 )]
 
-transform/pos = Vector2( 498, 39 )
+transform/pos = Vector2( 509, 13 )
 
 

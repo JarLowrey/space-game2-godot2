@@ -8,13 +8,13 @@ var deleted = false
 var target = null setget set_target
 
 #misc vars
-export var fire_pos_offset = [0,0]
+export var fire_pos_offset = [0.0,0.0]
 export var follow_gun = false
 export var fit_collider_to_sprite = true setget set_fit_collider_to_sprite
 
 #scaling change related vars
-export var size_scaling_velocity = [0,0]
-export var max_size_scale = [0,0]
+export var size_scaling_velocity = [0.0,0.0]
+export var max_size_scale = [0.0,0.0]
 
 #death/kill/free() related vars
 export var kill_on_collide = false setget set_kill_on_collide
@@ -41,6 +41,15 @@ signal bullet_killed
 func setup(shooting_gun):
 	gun_shot_from = shooting_gun
 	set_z(min(get_z(),gun_shot_from.get_z()-1)) #ensure behind gun
+	
+	#choose parent
+	var parent = null
+	var root_node = gun_shot_from.get_node("/root")
+	if follow_gun:
+		parent = gun_shot_from.get_node("ChildBullets")
+	else:
+		parent = root_node
+	parent.add_child(self)
 	
 	#set bullet position
 	var offset = Vector2(fire_pos_offset[0], fire_pos_offset[1])

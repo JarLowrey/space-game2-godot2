@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=1]
+[gd_scene load_steps=5 format=1]
 
 [ext_resource path="res://src/scenes/ship/player.gd" type="Script" id=1]
 [ext_resource path="res://src/scenes/ship/player_controller.gd" type="Script" id=2]
 [ext_resource path="res://src/auto_resource_selector.gd" type="Script" id=3]
+[ext_resource path="res://src/scenes/drones/drone_manager.tscn" type="PackedScene" id=4]
 
 [node name="player" type="Node2D"]
 
@@ -55,5 +56,7 @@ layer = 1
 offset = Vector2( 0, 0 )
 rotation = 0.0
 scale = Vector2( 1, 1 )
+
+[node name="drone_manager" parent="body" instance=ExtResource( 4 )]
 
 
