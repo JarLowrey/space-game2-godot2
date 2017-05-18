@@ -52,7 +52,6 @@ func _process(delta):
 func _set_new_direction():
 	var rand_vec = Vector2(_max_dist() * rand_range(0,1),_max_dist() * rand_range(0,1))
 	var dir_to_ship = _dir_to(drone_manager.get_pos())
-	print(dir_to_ship)
 	return dir_to_ship 
 	
 func _ready():

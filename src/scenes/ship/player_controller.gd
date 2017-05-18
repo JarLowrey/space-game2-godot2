@@ -5,7 +5,6 @@ export var rot_speed_divider = 7
 
 func _ready():
 	set_process(true)
-	set_rotd(180)
 	pass
 
 func _move():
