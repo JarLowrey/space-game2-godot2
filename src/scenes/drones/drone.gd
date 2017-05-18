@@ -15,6 +15,15 @@ func _check_for_new_direction():
 		return _set_new_direction()
 	return null
 
+
+#func _orbit():
+#	orbit_angle += 1
+#	var rad = deg2rad(orbit_angle)
+#	var radius = get_pos().distance_to(Vector2(0,0))
+#	var x = cos(rad) * radius
+#	var y = sin(rad) * radius
+#	set_pos(Vector2(x,y))
+
 func _max_dist():
 	return drone_manager.get_node("area/collider").get_shape().get_radius()
 
@@ -42,14 +51,12 @@ func _process(delta):
 
 func _set_new_direction():
 	var rand_vec = Vector2(_max_dist() * rand_range(0,1),_max_dist() * rand_range(0,1))
-	var dir_to_ship = _dir_to(drone_manager.get_global_pos())
+	var dir_to_ship = _dir_to(drone_manager.get_pos())
 	print(dir_to_ship)
 	return dir_to_ship 
 	
 func _ready():
 	drone_manager = get_node("../../")
-	get_node("Movement").connect("timeout",self,"_set_new_direction")
-	get_node("Movement").set_wait_time(1)
 	_set_new_direction()
 	set_process(true)
 	pass
