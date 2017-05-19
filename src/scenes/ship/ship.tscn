@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=1]
+[gd_scene load_steps=3 format=1]
 
 [ext_resource path="res://src/auto_resource_selector.gd" type="Script" id=1]
+[ext_resource path="res://src/scenes/health.tscn" type="PackedScene" id=2]
 
 [node name="ship" type="KinematicBody2D"]
 
@@ -22,7 +23,7 @@ trigger = false
 
 script/script = ExtResource( 1 )
 
-[node name="ProgressBar" type="ProgressBar" parent="."]
+[node name="HealthBar" type="ProgressBar" parent="."]
 
 focus/ignore_mouse = false
 focus/stop_mouse = true
@@ -40,5 +41,15 @@ range/value = 1.0
 range/exp_edit = false
 range/rounded = false
 percent/visible = true
+
+[node name="HealthMgr" parent="." instance=ExtResource( 2 )]
+
+[node name="Area2D" type="Area2D" parent="."]
+
+input/pickable = true
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
 
 

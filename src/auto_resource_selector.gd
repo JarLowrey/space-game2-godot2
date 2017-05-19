@@ -22,6 +22,7 @@ func set_texture(tex):
 	var collider = get_node("../collider")
 	collider.set_polygon(get_saved_polygon(tex))
 	_resize_health_bar()
+	get_node("/root/global").resize_to(get_item_rect(),get_node("../../Area2D"))
 
 func _resize_health_bar():
 	var sprite_size = get_item_rect().size
@@ -30,7 +31,7 @@ func _resize_health_bar():
 	var margin_off_sprite = 20
 	var y = -(sprite_size.y / 2  + height/2 + margin_off_sprite)
 	var rect = Rect2(- sprite_size.x/2, y, width, height)
-	var bar = get_node("../../ProgressBar")
+	var bar = get_node("../../HealthBar")
 	bar.edit_set_rect(rect)
 	bar.set_val(50)
 
