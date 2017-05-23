@@ -1,6 +1,6 @@
-extends KinematicBody2D
+extends RigidBody2D
 
-var movement_amt = 10
+var force_amt = 50
 export var rot_speed_divider = 7
 
 func _ready():
@@ -8,24 +8,25 @@ func _ready():
 	pass
 
 func _move():
-	var movement = Vector2()
+	var force = Vector2()
 	var pressed = false
 	if Input.is_action_pressed("move_up"):
 		pressed = true
-		movement += Vector2(0, -movement_amt)
+		force += Vector2(0, -force_amt)
 	if Input.is_action_pressed("move_down"):
 		pressed = true
-		movement += Vector2(0, movement_amt)
+		force += Vector2(0, force_amt)
 	if Input.is_action_pressed("move_left"):
 		pressed = true
-		movement += Vector2(-movement_amt, 0)
+		force += Vector2(-force_amt, 0)
 	if Input.is_action_pressed("move_right"):
 		pressed = true
-		movement += Vector2(movement_amt, 0)
+		force += Vector2(force_amt, 0)
 	
 	if pressed:
-		move(movement)
-		get_node("/root/global")._set_rotation(get_node("rotating_nodes"), movement.angle(), rot_speed_divider)
+		apply_impulse(Vector2(), force)
+		get_node("/root/global")._set_rotation(get_node("Sprite"), force.angle(), rot_speed_divider)
+		get_node("/root/global")._set_rotation(get_node("CollisionPolygon2D"), force.angle(), rot_speed_divider)
 
 func _process(delta):
 	_move()

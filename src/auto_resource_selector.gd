@@ -9,20 +9,22 @@ const polygon_ext = ".xml"
 func map_file_name(texture_name):
 	return texture_mapping_json[texture_name]
 
-func get_saved_polygon(texture_name):
+func get_polygon_scene(texture_name):
 	#load the normal map if it exists
 	var polygon_file_path = polygon_path + map_file_name(texture_name) + polygon_ext
 	if File.new().file_exists(polygon_file_path):
-		return load(polygon_file_path).instance().get_polygon()
+		return load(polygon_file_path)
 	return null
 
 func set_texture(tex):
 	.set_texture(tex)
 	var tex = get_texture().get_name().split(".")[0] #remove ext from name
-	var collider = get_node("../collider")
-	collider.set_polygon(get_saved_polygon(tex))
+	var collider = get_polygon_scene(tex)
+	get_parent().call_deferred("add_child",collider.instance())
+#	var collider = get_node("../collider")
+#	collider.set_polygon(get_saved_polygon(tex))
+#	print (collider.get_polygon())
 	_resize_health_bar()
-	get_node("/root/global").resize_to(get_item_rect(),get_node("../../Area2D"))
 
 func _resize_health_bar():
 	var sprite_size = get_item_rect().size
@@ -31,7 +33,7 @@ func _resize_health_bar():
 	var margin_off_sprite = 20
 	var y = -(sprite_size.y / 2  + height/2 + margin_off_sprite)
 	var rect = Rect2(- sprite_size.x/2, y, width, height)
-	var bar = get_node("../../HealthBar")
+	var bar = get_node("../HealthBar")
 	bar.edit_set_rect(rect)
 	bar.set_val(50)
 

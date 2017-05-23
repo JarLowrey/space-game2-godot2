@@ -16,4 +16,9 @@ transform/pos = Vector2( 206.759, 79.5226 )
 
 transform/pos = Vector2( 720.247, 261.288 )
 
+[node name="ship 2" parent="." instance=ExtResource( 3 )]
+
+transform/pos = Vector2( 722, 111.91 )
+gravity_scale = 1.0
+
 
